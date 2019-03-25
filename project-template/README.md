@@ -1,16 +1,19 @@
-# Application Name
+# EZ-Lease
 
-Rename the above with the name of your application.
+## Overview
 
-# Overview
+EZ-Lease is a tenant <-> landlord communication platform, which makes communications between tenants and landlords quick and easy. Primary users will be landlords who manage one or more properties, and tenants who rent a property from a landlord. 
 
-Add an overview of your application here.
+Tenants might use the application to contact their landlord for maintenance issues, or in regards to the status of their rent payment(s). Landlords might use it to respond to maintenance requests, or remind tenants that their rent is due soon or overdue.
 
-# Team Members
+## Team Members
 
-Add the team member names who are working on this application.
+- Evan Bressler
+- Tahseen Rahman
+- Nasana Bajracharya
+- Yugal Subedi
 
-# Application Initialization
+## Application Initialization
 
 To use this application you should have `node` and `npm` installed and issue the following commands:
 
