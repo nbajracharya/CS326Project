@@ -1,3 +1,4 @@
 # Add folders/files that we don't want to be tracked by git...
 
 project-template/node_modules/
+.vscode/
