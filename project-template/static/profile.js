@@ -9,13 +9,48 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 // This is a place holder for the initial application state.
-var state = [];
+var state = [{ name: "John Doe", email: "jdoe@thatmail.com", number: "417-767-7787",
+  address: "1800 Sour Drive, Sunnyvale, CA, 94019", manager: "David Murray",
+  balance: "$0.00", leaseEnd: new Date('2020-01-13') }];
 
 // This grabs the DOM element to be used to mount React components.
 var contentNode = document.getElementById("contents");
 
-var MyComponent = function (_React$Component) {
-  _inherits(MyComponent, _React$Component);
+var InfoRow = function (_React$Component) {
+  _inherits(InfoRow, _React$Component);
+
+  function InfoRow() {
+    _classCallCheck(this, InfoRow);
+
+    return _possibleConstructorReturn(this, (InfoRow.__proto__ || Object.getPrototypeOf(InfoRow)).apply(this, arguments));
+  }
+
+  _createClass(InfoRow, [{
+    key: "render",
+    value: function render() {
+      var borderedStyle = { border: "1px solid silver", padding: 4 };
+      return React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          { style: borderedStyle },
+          this.props.info_id
+        ),
+        React.createElement(
+          "td",
+          { style: borderedStyle },
+          this.props.info_response
+        )
+      );
+    }
+  }]);
+
+  return InfoRow;
+}(React.Component);
+
+var MyComponent = function (_React$Component2) {
+  _inherits(MyComponent, _React$Component2);
 
   function MyComponent() {
     _classCallCheck(this, MyComponent);
@@ -26,13 +61,46 @@ var MyComponent = function (_React$Component) {
   _createClass(MyComponent, [{
     key: "render",
     value: function render() {
+      var borderedStyle = { border: "1px solid silver", padding: 6 };
       return React.createElement(
         "div",
         null,
         React.createElement(
           "h1",
           null,
-          "My View 02"
+          "Ez-Lease"
+        ),
+        React.createElement(
+          "h2",
+          null,
+          "Profile"
+        ),
+        React.createElement(
+          "h3",
+          null,
+          "Basic Information"
+        ),
+        React.createElement(
+          "table",
+          { style: { borderCollapse: "collapse" } },
+          React.createElement(
+            "tbody",
+            null,
+            React.createElement(InfoRow, { info_id: "Full Name",
+              info_response: this.state.name }),
+            React.createElement(InfoRow, { info_id: "E-Mail",
+              info_response: "jdoe@thatmail.com" }),
+            React.createElement(InfoRow, { info_id: "Contact Number",
+              info_response: "417-767-7787" }),
+            React.createElement(InfoRow, { info_id: "Property Address",
+              info_response: "1800 Sour Drive, Sunnyvale, CA, 94019" }),
+            React.createElement(InfoRow, { info_id: "Property Manager",
+              info_response: "David Murray" }),
+            React.createElement(InfoRow, { info_id: "Outstanding Balance",
+              info_response: "$0.00" }),
+            React.createElement(InfoRow, { info_id: "Lease End Date",
+              info_response: "13/01/2020" })
+          )
         )
       );
     }
