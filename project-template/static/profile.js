@@ -32,7 +32,17 @@ var MyComponent = function (_React$Component) {
         React.createElement(
           "h1",
           null,
-          "My View 02"
+          "Ez-Lease"
+        ),
+        React.createElement(
+          "h2",
+          null,
+          "Profile"
+        ),
+        React.createElement(
+          "h3",
+          null,
+          "Basic Information"
         )
       );
     }
