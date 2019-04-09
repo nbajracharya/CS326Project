@@ -9,9 +9,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 // This is a place holder for the initial application state.
-var state = [{ name: "John Doe", email: "jdoe@thatmail.com", number: "417-767-7787",
+var state = [{ name: "John Doe", email: "jdoe@thatmail.com", number: 4177677787,
   address: "1800 Sour Drive, Sunnyvale, CA, 94019", manager: "David Murray",
-  balance: "$0.00", leaseEnd: new Date('2020-01-13') }];
+  balance: "$" + 0.00, leaseEnd: Date(2020, 13, 0) }];
 
 // This grabs the DOM element to be used to mount React components.
 var contentNode = document.getElementById("contents");
@@ -87,19 +87,19 @@ var MyComponent = function (_React$Component2) {
             "tbody",
             null,
             React.createElement(InfoRow, { info_id: "Full Name",
-              info_response: this.state.name }),
+              info_response: state[0].name }),
             React.createElement(InfoRow, { info_id: "E-Mail",
-              info_response: "jdoe@thatmail.com" }),
+              info_response: state[0].email }),
             React.createElement(InfoRow, { info_id: "Contact Number",
-              info_response: "417-767-7787" }),
+              info_response: state[0].number }),
             React.createElement(InfoRow, { info_id: "Property Address",
-              info_response: "1800 Sour Drive, Sunnyvale, CA, 94019" }),
+              info_response: state[0].address }),
             React.createElement(InfoRow, { info_id: "Property Manager",
-              info_response: "David Murray" }),
+              info_response: state[0].manager }),
             React.createElement(InfoRow, { info_id: "Outstanding Balance",
-              info_response: "$0.00" }),
+              info_response: state[0].balance }),
             React.createElement(InfoRow, { info_id: "Lease End Date",
-              info_response: "13/01/2020" })
+              info_response: state[0].leaseEnd })
           )
         )
       );
