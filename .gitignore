@@ -2,3 +2,4 @@
 
 project-template/node_modules/
 .vscode/
+**/.DS_Store
