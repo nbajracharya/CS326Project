@@ -230,7 +230,6 @@ var TenantRegistration = function (_React$Component4) {
             { type: "submit", "class": "button button-block" },
             "Get Started"
           )
-          "Ez-Lease"
         )
       );
     }
