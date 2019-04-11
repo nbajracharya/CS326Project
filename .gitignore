@@ -2,3 +2,4 @@
 
 project-template/node_modules/
 .vscode/
+project-template/static/*.js
