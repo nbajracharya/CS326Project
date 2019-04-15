@@ -6,8 +6,30 @@ const bodyParser = require('body-parser');
 app.use(express.static('static'));
 app.use(bodyParser.json());
 
-const mongodb = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
+
+const profileFieldType = {
+  name: 'required',
+  email: 'required', 
+  number: 'required',
+  address: 'required', 
+  manager: 'required',
+  balance: 'required', 
+  leaseEnd: 'required',
+};
+
+function validateProfile(profile) {
+  for (const field in profileFieldType)  {
+    const type = profileFieldType[field];
+    if  (!type) {
+      delete profile[field];
+    }
+    else if (type === 'required' && !profile[field]) {
+      return `${field} is required.`; 
+    }
+  }
+  return null;
+}
 
 app.get('/api/profile', (req, res) => {
     const filter = {};
