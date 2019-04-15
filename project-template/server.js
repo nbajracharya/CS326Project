@@ -33,11 +33,10 @@ function validateProfile(profile) {
 
 app.get('/api/profile', (req, res) => {
     const filter = {};
-    if (req.query.status) filter.status = req.query.status;
   
-    db.collection('profile').find(filter).toArray().then(issues => {
-      const metadata = { total_count: issues.length };
-      res.json({ _metadata: metadata, records: issues })
+    db.collection('profile').find(filter).toArray().then(profiles => {
+      const metadata = { total_count: profiles.length };
+      res.json({ _metadata: metadata, records: profiles })
     }).catch(error => {
       console.log(error);
       res.status(500).json({ message: `Internal Server Error: ${error}` });
@@ -45,21 +44,18 @@ app.get('/api/profile', (req, res) => {
   });
   
   app.post('/api/profile', (req, res) => {
-    const newIssue = req.body;
-    newIssue.created = new Date();
-    if (!newIssue.status)
-      newIssue.status = 'New';
+    const newProfile = req.body;
   
-    const err = validateIssue(newIssue);
+    const err = validateProfile(newProfile);
     if (err) {
       res.status(422).json({ message: `Invalid request: ${err}` });
       return;
     }
   
-    db.collection('profile').insertOne(newIssue).then(result =>
+    db.collection('profile').insertOne(newProfile).then(result =>
       db.collection('profile').find({ _id: result.insertedId }).limit(1).next()
-    ).then(newIssue => {
-      res.json(newIssue);
+    ).then(newProfile => {
+      res.json(newProfile);
     }).catch(error => {
       console.log(error);
       res.status(500).json({ message: `Internal Server Error: ${error}` });
