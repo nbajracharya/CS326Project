@@ -1,168 +1,231 @@
-// This is a place holder for the initial application state.
-// const state = [
+// Component Structure
+// --------------------
+// Container
+// --> Title
+// --> Form
+// --> List
+// ----> Concern
+// --> Footer
 
-// ];
-
-// // This grabs the DOM element to be used to mount React components.
-// var contentNode = document.getElementById("contents");
-
-// class MyComponent extends React.Component {
-//   constructor() {
-//     super();
-//   }
-
-//   render() {
-//     return (
-//       <div>
-//         <h1>Messages</h1>
-//       </div>
-//     );
-//   }
-// }
-
-// // This renders the JSX component inside the content node:
-// ReactDOM.render(<MyComponent />, contentNode);
-
-import React from 'react';
-import 'isomorphic-fetch';
-import { Link } from 'react-router';
-
-const MessageRow = (props) => (
- <tr>
-   <td><Link to={`/message/${props.message._id}`}>{props.message._id.substr(-4)}</Link></td>
-   <td>{props.message.status}</td>
-   <td>{props.message.owner}</td>
-   <td>{props.message.created.toDateString()}</td>
-   <td>{props.message.effort}</td>
-   <td>
-     {props.message.completionDate ? props.message.completionDate.toDateString() : ""}
-   </td>
-   <td>{props.message.title}</td>
- </tr>
-);
-
-function MesssageTable(props) {
- const messageRows = props.message.map(message => (
-   <MessageRow key={message._id} message={message} />
- ));
- return (
-   <table className="bordered-table">
-     <thead>
-       <tr>
-         <th>Id</th>
-         <th>Status</th>
-         <th>Owner</th>
-         <th>Created</th>
-         <th>Effort</th>
-         <th>Completion Date</th>
-         <th>Title</th>
-       </tr>
-     </thead>
-     <tbody>{messageRows}</tbody>
-   </table>
- );
-}
-
-export default class messageList extends React.Component {
- constructor() {
-   super();
-   this.state = { message: [] };
-
-   this.createmessage = this.createmessage.bind(this);
-   this.setFilter = this.setFilter.bind(this);
- }
-
- componentDidMount() {
-   this.loadData();
- }
-
- // This method is part of the React component "lifecycle". It is invoked
- // when a component property is updated. In this case, we are using it to
- // load new data when the props.location object is changed. In particular,
- // when we click on a link that causes react router to change the view to
- // the messageList and the URL changes (for example, a search query) it
- // causes the componentDidUpdate() method to be invoked.
- componentDidUpdate(prevProps) {
-   const oldQuery = prevProps.location.query;
-   const newQuery = this.props.location.query;
-   if (oldQuery.status === newQuery.status) {
-     return;
-   }
-   this.loadData();
- }
-
- loadData() {
-   // Note: React Router automatically adds a "location" property to a react
-   //       object's "props". The object that the "location" property refers
-   //       to also has a "search" property which is the query string of the
-   //       URL, including the '?' character  -  which is why we do not need
-   //       to add it to the string in the `fetch()` call.
-   fetch(`/api/messages${this.props.location.search}`).then(response => {
-     if (response.ok) {
-       response.json().then(data => {
-         console.log("Total count of records:", data._metadata.total_count);
-         data.records.forEach(message => {
-           message.created = new Date(message.created);
-           if (message.completionDate)
-             message.completionDate = new Date(message.completionDate);
-         });
-         this.setState({ message: data.records });
-       });
-     } else {
-       response.json().then(error => {
-         alert("Failed to fetch messages:" + error.message)
-       });
-     }
-   }).catch(err => {
-     alert("Error in fetching data from server:", err);
-   });
- }
-
- createMessage(newMessage) {
-   fetch('/api/message', {
-     method: 'POST',
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify(newMessage),
-   })
-     .then(res => {
-       if (res.ok) {
-         res.json()
-           .then(updatedMessage => {
-             updatedMessage.created = new Date(updatedMessage.created);
-             if (updatedMessage.completionDate)
-               updatedMessage.completionDate = new Date(updatedMessage.completionDate);
-             const newMessage = this.state.messages.concat(updatedMessage);
-             this.setState({ message: newMessage });
-           });
-       }
-       else {
-         res.json()
-           .then(error => {
-             alert('Failed to add message: ' + error.message);
-           });
-       }
-     });
- }
-
- setFilter(query) {
-   this.props.router.push({ pathname: this.props.location.pathname, query });
- }
-
- render() {
-   return (
-     <div>
-       <MessageFilter setFilter={this.setFilter} />
-       <hr />
-       <MessageTable message={this.state.message} />
-       <hr />
-       <MessageAdd createMessage={this.createMessage} />
-     </div>
-   );
- }
-}
-
-MessageList.propTypes = {
- location: React.PropTypes.object.isRequired,
- router: React.PropTypes.object,
+// stateless component
+const Title = () => {
+	return (
+		<div id="titleWrapper">
+			<h2 className="textCenter">Tenant Issues</h2>
+		</div>
+	);
 };
 
+// This grabs the DOM element to be used to mount React components.
+var contentNode = document.getElementById("contents");
+
+class Form extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			value: ''
+		};
+		this.handleChange = this.handleChange.bind(this);
+		this.handleNewConcernAddition = this.handleNewConcernAddition.bind(this);
+	}
+	
+	handleChange(event) {
+		this.setState({
+			value: event.target.value
+		});
+	}
+	
+	handleNewConcernAddition() {
+		if(this.input.value !== '') {
+			this.props.addConcern(this.input.value);
+			this.setState({
+				value: ''
+			});
+			this.input.placeholder = "Add a concern...";
+		}
+	}
+	
+	render() {
+		return (
+			// ref should be passed a callback
+			// with underlying dom element as its
+			// argument to get its reference 
+			<div id="form">
+				<input 
+					ref={node => {
+						this.input = node;
+					}}
+					value={this.state.value}
+					placeholder="Add concerns here..."
+					autocomplete="off"
+					onChange={this.handleChange}
+				/>
+
+				<button 
+					onClick={this.handleNewConcernAddition}
+				>	
+					+
+				</button>	
+			</div>
+		);
+	}
+}
+
+const Concern = ({concern, remove}) => {
+	// single concern 
+	return (
+		<p className="concerns">
+			{concern.value}
+			<span 
+				className="removeBtn"
+				onClick={()=> {
+					remove(concern.id)
+				}}>
+				x
+			</span>
+		</p>
+	);
+};
+
+const List = ({concerns, remove}) => {
+	let allConcerns = [];
+	
+	if(concerns.length > 0) {
+		allConcerns = concerns.map(concern => {
+			// passing concern and remove method reference
+			return (<Concern concern={concern} remove={remove} />);
+			//return (<p>{concern.value}</p>);
+		});
+	} else {
+		allConcerns.push(<h3 id="acu">All caught up !</h3>);	
+	}
+	
+	return (
+		<div id="list">
+			<p id="info"> Your Concerns: </p>
+			{allConcerns}
+		</div>
+	);
+};
+
+const Footer = () => {
+	return (
+		<div id="footer">
+			<a href="https://sites.google.com/cs.umass.edu/compsci326/home" target="_blank">
+				<p>
+					CS 326 Spring 19
+				</p>
+			</a>
+		</div>
+	);
+};
+
+class Container extends React.Component {
+	constructor(props) {
+		super(props);
+		// data for introduction to app
+		// for new users
+		const introData = [
+			{
+				id: -3, 
+				value: "The sink does not work at the moment. It is not draining the water."
+			},
+			{
+				id: -2,
+				value: "Our shower head is leaking."
+			},
+			{
+				id: -1,
+				value: "Our bathroom door is not locking properly."
+			}
+		];
+		
+		const localData = localStorage.concerns && JSON.parse(localStorage.concerns);
+
+		this.state = { 
+			data: localData || introData
+		};
+		
+		// binding methods
+		this.addConcern = this.addConcern.bind(this);
+		this.removeConcern = this.removeConcern.bind(this);
+	}
+	// Handler to update localStorage
+	updateLocalStorage() {
+		if (typeof(Storage) !== "undefined")
+			localStorage.concerns = JSON.stringify(this.state.data);
+	}
+	// Handler to add concerns
+	addConcern(val) {
+		let id;
+		// if localStorage is available then increase localStorage count
+		// else use global window object's id variable
+		if (typeof(Storage) !== "undefined") {
+			id = Number(localStorage.count);
+			localStorage.count = Number(localStorage.count) + 1;
+		} else {
+			id = window.id++;
+		}
+		
+		const concern = { 
+			value: val, 
+			id: id 
+		};
+		
+		this.state.data.push(concern);
+		// update state
+		this.setState({
+			data: this.state.data
+		}, () => {
+			// update localStorage
+			this.updateLocalStorage();
+		});
+	}
+	// Handler to remove concern
+	removeConcern(id) {
+		// filter out the concern that has to be removed
+		const list = this.state.data.filter(concern => {
+			if (concern.id !== id)
+				return concern;
+		});
+		// update state
+		this.setState({
+			data: list
+		}, () => {
+			// update localStorage
+			this.updateLocalStorage();
+		});
+	}
+	
+	componentDidMount() {
+		localStorage.clear();
+		if (typeof(Storage) !== "undefined") {
+			if(!localStorage.concerns) {
+				localStorage.concerns = JSON.stringify(this.state.data);
+			}
+			if(!localStorage.count) {
+				localStorage.count = 0;
+			}
+
+		} else {
+			 console.log("%cApp will not remember concerns created as LocalStorage Is Not Available",
+							 "color: hotpink; background: #333; font-size: x-large;font-family: Courier;");
+			window.id = 0;
+		}
+	}
+	
+	render() {
+		return (
+			<div id="container">
+				<Title />
+				<Form addConcern={this.addConcern} />
+				<List concerns={this.state.data} remove={this.removeConcern} />
+				<Footer />
+			</div>
+		);
+	}
+}
+
+ReactDOM.render(<Container />, contentNode);
+// This renders the JSX component inside the content node:
+//ReactDOM.render(<MyComponent />, contentNode);
