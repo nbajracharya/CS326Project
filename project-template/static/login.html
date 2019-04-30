@@ -10,17 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.1/react-dom.js">
     </script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <style>
-        table.bordered-table th,
-        td {
-            border: 1px solid silver;
-            padding: 4px;
-        }
-
-        table.bordered-table {
-            border-collapse: collapse
-        }
-    </style>
 </head>
 
 <body>
@@ -31,7 +20,7 @@
             </div>
         </div>
     </nav>
-    <div class="card" style="width: 30%; margin: auto; padding: 20px; top: 200px;">
+    <div class="card" style="width: 30%; margin: auto; padding: 20px; top: 100px;">
         <form role="form" action="/requests.html" method="GET">
         <div class="form-group">
             <label for="exampleInputEmail1">Email</label>
@@ -41,8 +30,8 @@
             <label for="exampleInputPassword1">Password</label>
             <input type="password" required class="form-control" id="exampleInputPassword1" placeholder="Password">
         </div>
-        <button type="submit" class="btn btn-lg btn-success">Submit</button>
-        <a class="btn btn-lg btn-danger" href="/requests.html">Cancel</a>
+        <button type="submit" class="btn btn-lg btn-success btn-block">Submit</button>
+        <a class="btn btn-lg btn-outline-danger btn-block" href="/requests.html">Cancel</a>
         </form>
     </div>
 </body>

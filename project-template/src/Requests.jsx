@@ -6,7 +6,7 @@ const RequestRow = (props) => {
   return (<tr>
     <td>{props.request._id.substr(-4)}</td>
     <td>{props.request.name}</td>
-    <td><button onClick={onDeleteClick}>Resolve</button></td>
+    <td><button className="btn btn-lg btn-warning btn-block" onClick={onDeleteClick}>Resolve</button></td>
   </tr>
   );
 }
@@ -22,16 +22,21 @@ function RequestTable(props) {
   ));
 
   return (
-    <table className="bordered-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>{requestRows}</tbody>
-    </table>
+	<div className="card">
+		<div className="card-body">
+			<h2>Current Maintenance Requests</h2>
+			<table className="table table-striped table-hover">
+			<thead>
+				<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th></th>
+				</tr>
+			</thead>
+			<tbody>{requestRows}</tbody>
+			</table>
+		</div>
+	</div>
   );
 }
 
@@ -60,20 +65,8 @@ class RequestList extends React.Component {
     this.loadData();
   }
 
-  componentDidUpdate(prevProps) {
-    const oldQuery = prevProps.location.query;
-    const newQuery = this.props.location.query;
-    if (oldQuery.status === newQuery.status
-      && oldQuery.effort_gte === newQuery.effort_gte
-      && oldQuery.effort_lte === newQuery.effort_lte
-    ) {
-      return;
-    }
-    this.loadData();
-  }
-
   loadData() {
-    fetch(`/api/requests${this.props.location.search}`).then(response => {
+    fetch('/api/requests').then(response => {
       if (response.ok) {
         response.json().then(data => {
           console.log("Total count of records:", data._metadata.total_count);
@@ -112,17 +105,16 @@ class RequestList extends React.Component {
       });
   }
 
-  setFilter(query) {
-    this.props.router.push({ pathname: this.props.location.pathname, query });
-  }
-
   render() {
     return (
-      <div>
-        <RequestTable requests={this.state.requests} deleteRequest={this.deleteRequest} />
-        <hr />
-        <AddRequest createRequest={this.createRequest} />
-      </div>
+      	<div>
+			<br/>
+			<br/>
+			<AddRequest createRequest={this.createRequest} />
+			<br/>
+			<br/>
+        	<RequestTable requests={this.state.requests} deleteRequest={this.deleteRequest} />
+      	</div>
     );
   }
 }
@@ -135,27 +127,29 @@ class AddRequest extends React.Component {
   
 	handleSubmit(e) {
 	  e.preventDefault();
-	  let form = document.forms.requestAdd;
+	  let form = document.forms.addRequest;
 	  this.props.createRequest({
-		title: form.name.value,
+		name: form.name.value,
 	  });
 	  form.name.value = '';
 	}
   
 	render() {
 	  return (
-		<div>
-		  <form name="addRequest" onSubmit={this.handleSubmit}>
-			<input type="text" name="name" placeholder="name" />
-			<button>Add</button>
-		  </form>
+		<div className="card">
+			<div className="card-body">
+				<h2>Create Maintenance Request</h2>
+				<form name="addRequest" onSubmit={this.handleSubmit}>
+					<input type="text" name="name" className="form-control form-control-lg" required placeholder="Please describe your request..." />
+					<button className="btn btn-lg btn-outline-primary btn-block" >Create Maintenance Request</button>
+				</form>
+			</div>
 		</div>
 	  );
 	}
 }
 
 RequestList.propTypes = {
-  location: React.PropTypes.object.isRequired,
   router: React.PropTypes.object,
 };
 
