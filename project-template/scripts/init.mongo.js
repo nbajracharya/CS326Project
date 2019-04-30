@@ -12,5 +12,12 @@ db.requests.remove({});
 db.requests.insert([
   {
     name: "Water is leaking through ceiling!!"
-  }
+  },
 ]);
+
+// Lastly, we create "indexes" to make searching faster. For this particular
+// application we know that searching on the status, owner, and created properties
+// will be common, so we create indexes on those.
+//db.profile.createIndex({ name: 1 });
+//db.profile.createIndex({ number: 1 });
+//db.profile.createIndex({ address: 1 });
