@@ -9,6 +9,7 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.1/react-dom.js">
     </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
         table.bordered-table th,
         td {
@@ -23,9 +24,27 @@
 </head>
 
 <body>
-    <!-- this is where our component will appear -->
-    <div id="contents"></div>
-    <script src="/Login.js"></script>
+    <nav class="navbar navbar-light bg-light navbar-expand-sm">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" style="font-size: 32pt;" href="/">EZ-Lease</a>
+            </div>
+        </div>
+    </nav>
+    <div class="card" style="width: 30%; margin: auto; padding: 20px; top: 200px;">
+        <form role="form" action="/requests.html" method="GET">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email</label>
+            <input type="email" required class="form-control" id="exampleInputEmail1" placeholder="example@ex.com">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" required class="form-control" id="exampleInputPassword1" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-lg btn-success">Submit</button>
+        <a class="btn btn-lg btn-danger" href="/requests.html">Cancel</a>
+        </form>
+    </div>
 </body>
 
 </html>

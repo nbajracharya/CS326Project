@@ -41,8 +41,9 @@ App.propTypes = {
 // single-page apps with multiple views.
 const RoutedApp = () => (
   <Router history={hashHistory} >
-    {<Redirect from="/" to="/requests" />}
+    {/* <Redirect from="/" to="/requests" /> */}
     <Route path="/" component={App} >
+      <IndexRoute component={Requests} />
       <Route path="/requests" component={Requests} />
       <Route path="/login" component={Login} />
       <Route path="*" component={NoMatch} />

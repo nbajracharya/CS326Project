@@ -4,15 +4,30 @@
 <head>
     <meta charset="UTF-8" />
     <title>EZ-Lease</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
-    <h1>EZ-Lease</h1>
-    <hr/>
-    <ul>
-        <li><a href="/login.html">Login</a></li>
-        <li><a href="/requests.html">Requests</a></li>
-    </ul>
+    <nav class="navbar navbar-light bg-light navbar-expand-sm">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" style="font-size: 32pt;" href="#">EZ-Lease</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" style="font-size: 18pt;" href="/login.html">Landlord Login</a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="jumbotron">
+            <h2>Welcome to EZ-Lease!</h2>
+            <p class="lead">EZ-Lease is a property management tool used by landlords to collect maintenance requests from tenants...</p>
+            <a class="btn btn-success btn-lg" href="/requests.html">Go to Maintenance Requests</a>
+            <p>If your are the manager of this property, please login by clicking the "Login" button at the top-right of the page.</p>
+        </div>
+    </div>
 </body>
 
 </html>

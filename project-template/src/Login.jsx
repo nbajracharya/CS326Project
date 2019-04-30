@@ -36,8 +36,6 @@ class LoginContent extends React.Component {
   render() {
     return (
       <div>
-        <h1>EZ-Lease</h1>
-        <h2>Welcome to EZ-Lease ...</h2>
         <Login />
       </div>
     );
