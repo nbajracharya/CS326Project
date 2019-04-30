@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import { Router, Route, hashHistory, withRouter, IndexRoute, Link } from 'react-router';
 
 import Login from './Login.jsx/index.js';
-import Messages from './Messages.jsx';
-import Profile from './Profile.jsx';
+import Requests from './Requests.jsx';
 
 var contentNode = document.getElementById("contents");
 
@@ -22,9 +21,6 @@ const App = (props) => (
     </div>
     <div className="contents">
       {props.children}
-    </div>
-    <div className="footer">
-      COMPSCI 326 Project
     </div>
   </div >
 );
@@ -45,11 +41,10 @@ App.propTypes = {
 // single-page apps with multiple views.
 const RoutedApp = () => (
   <Router history={hashHistory} >
-    {/* <Redirect from="/" to="/issues" /> - replaced this with the Dashboard component */}
+    {<Redirect from="/" to="/requests" />}
     <Route path="/" component={App} >
-      <IndexRoute component={Login} />
-      <Route path="/profiles" component={withRouter(Profile)} />
-      <Route path="/profiles/:id" component={Profile} />
+      <Route path="/requests" component={Requests} />
+      <Route path="/login" component={Login} />
       <Route path="*" component={NoMatch} />
     </Route>
   </Router>);

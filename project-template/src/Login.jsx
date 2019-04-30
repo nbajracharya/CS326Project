@@ -6,7 +6,7 @@ class Login extends React.Component {
     return(
       <div>
         <h2>Login as Landlord:</h2>
-        <form action="/profile.html" method="get">
+        <form action="/requests.html" method="get">
             <div class="field-wrap">
             <label>
               Email Address<span class="req">*</span>
@@ -28,7 +28,7 @@ class Login extends React.Component {
   }
 }
 
-class HomeContent extends React.Component {
+class LoginContent extends React.Component {
   constructor() {
     super();
   }
@@ -38,11 +38,11 @@ class HomeContent extends React.Component {
       <div>
         <h1>EZ-Lease</h1>
         <h2>Welcome to EZ-Lease ...</h2>
-        <LandlordSection />
+        <Login />
       </div>
     );
   }
 }
 
 // This renders the JSX component inside the content node:
-ReactDOM.render(<HomeContent />, contentNode);
+ReactDOM.render(<LoginContent />, contentNode);
