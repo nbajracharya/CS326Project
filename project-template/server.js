@@ -92,33 +92,6 @@ app.post('/api/requests', (req, res) => {
   });
 });
 
-// This route provides back-end support for the issue editing capability
-// of the front-end application.
-app.put('/api/requests/:id', (req, res) => {
-  // (1) Convert the id provided by the request parameters into a MongoDB ObjectId.
-  let requestId;
-  try {
-    requestId = new ObjectId(req.params.id);
-  } catch (error) {
-    // An error occurs if the request id parameter is not formatted properly.
-    res.status(422).json({ message: `Invalid request ID format: ${error}` });
-    return;
-  }
-
-  // (2) Save the issue in a new variable.
-  const request = req.body;
-  // We delete the _id field because it is a string and we have already
-  // parsed it out as an ObjectId in step (1).
-  delete request._id;
-
-  // (3) Make sure the issue is "valid" before continuing. That is, make
-  // sure all of the required fields are present.
-  const err = validateRequest(request);
-  if (err) {
-    res.status(422).json({ message: `Invalid request: ${err}` });
-    return;
-  }});
-
 // This route provides back-end support for deleting an issue.
 // Note: It’s unlikely that an application will actually want
 // to delete database records. Usually, records are marked 
