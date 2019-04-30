@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, hashHistory, withRouter, IndexRoute, Link } from 'react-router';
 
-import Home from './Home.jsx';
+import Login from './Login.jsx/index.js';
 import Messages from './Messages.jsx';
 import Profile from './Profile.jsx';
 
@@ -47,7 +47,7 @@ const RoutedApp = () => (
   <Router history={hashHistory} >
     {/* <Redirect from="/" to="/issues" /> - replaced this with the Dashboard component */}
     <Route path="/" component={App} >
-      <IndexRoute component={Home} />
+      <IndexRoute component={Login} />
       <Route path="/profiles" component={withRouter(Profile)} />
       <Route path="/profiles/:id" component={Profile} />
       <Route path="*" component={NoMatch} />
