@@ -1,231 +1,163 @@
-// Component Structure
-// --------------------
-// Container
-// --> Title
-// --> Form
-// --> List
-// ----> Concern
-// --> Footer
+const RequestRow = (props) => {
+  function onDeleteClick() {
+    props.deleteRequest(props.request._id);
+  }
 
-// stateless component
-const Title = () => {
-	return (
-		<div id="titleWrapper">
-			<h2 className="textCenter">Tenant Issues</h2>
-		</div>
-	);
+  return (<tr>
+    <td>{props.request._id.substr(-4)}</td>
+    <td>{props.request.name}</td>
+    <td><button onClick={onDeleteClick}>Resolve</button></td>
+  </tr>
+  );
+}
+
+RequestRow.propTypes = {
+  request: React.PropTypes.object.isRequired,
+  deleteRequest: React.PropTypes.func.isRequired,
 };
 
-// This grabs the DOM element to be used to mount React components.
+function RequestTable(props) {
+  const requestRows = props.requests.map(request => (
+    <RequestRow key={request._id} request={request} deleteRequest={props.deleteRequest} />
+  ));
+
+  return (
+    <table className="bordered-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>{requestRows}</tbody>
+    </table>
+  );
+}
+
+RequestTable.propTypes = {
+  requests: React.PropTypes.array.isRequired,
+  deleteRequest: React.PropTypes.func.isRequired,
+};
+
+class RequestList extends React.Component {
+  constructor() {
+    super();
+    this.state = { requests: [] };
+
+    this.createRequest = this.createRequest.bind(this);
+    this.deleteRequest = this.deleteRequest.bind(this);
+  }
+
+  deleteRequest(id) {
+    fetch(`/api/requests/${id}`, { method: 'DELETE' }).then(response => {
+      if (!response.ok) alert('Failed to delete request');
+      else this.loadData();
+    });
+  }
+
+  componentDidMount() {
+    this.loadData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const oldQuery = prevProps.location.query;
+    const newQuery = this.props.location.query;
+    if (oldQuery.status === newQuery.status
+      && oldQuery.effort_gte === newQuery.effort_gte
+      && oldQuery.effort_lte === newQuery.effort_lte
+    ) {
+      return;
+    }
+    this.loadData();
+  }
+
+  loadData() {
+    fetch(`/api/requests${this.props.location.search}`).then(response => {
+      if (response.ok) {
+        response.json().then(data => {
+          console.log("Total count of records:", data._metadata.total_count);
+          this.setState({ requests: data.records });
+        });
+      } else {
+        response.json().then(error => {
+          alert("Failed to fetch requests:" + error.message)
+        });
+      }
+    }).catch(err => {
+      alert("Error in fetching data from server:", err);
+    });
+  }
+
+  createRequest(newRequest) {
+    fetch('/api/requests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newRequest),
+    })
+      .then(res => {
+        if (res.ok) {
+          res.json()
+            .then(updatedRequest => {
+              const newRequests = this.state.requests.concat(updatedRequest);
+              this.setState({ requests: newRequests });
+            });
+        }
+        else {
+          res.json()
+            .then(error => {
+              alert('Failed to add request: ' + error.message);
+            });
+        }
+      });
+  }
+
+  setFilter(query) {
+    this.props.router.push({ pathname: this.props.location.pathname, query });
+  }
+
+  render() {
+    return (
+      <div>
+        <RequestTable requests={this.state.requests} deleteRequest={this.deleteRequest} />
+        <hr />
+        <AddRequest createRequest={this.createRequest} />
+      </div>
+    );
+  }
+}
+
+class AddRequest extends React.Component {
+	constructor() {
+	  super();
+	  this.handleSubmit = this.handleSubmit.bind(this);
+	}
+  
+	handleSubmit(e) {
+	  e.preventDefault();
+	  let form = document.forms.requestAdd;
+	  this.props.createRequest({
+		title: form.name.value,
+	  });
+	  form.name.value = '';
+	}
+  
+	render() {
+	  return (
+		<div>
+		  <form name="addRequest" onSubmit={this.handleSubmit}>
+			<input type="text" name="name" placeholder="name" />
+			<button>Add</button>
+		  </form>
+		</div>
+	  );
+	}
+}
+
+RequestList.propTypes = {
+  location: React.PropTypes.object.isRequired,
+  router: React.PropTypes.object,
+};
+
 var contentNode = document.getElementById("contents");
-
-class Form extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			value: ''
-		};
-		this.handleChange = this.handleChange.bind(this);
-		this.handleNewConcernAddition = this.handleNewConcernAddition.bind(this);
-	}
-	
-	handleChange(event) {
-		this.setState({
-			value: event.target.value
-		});
-	}
-	
-	handleNewConcernAddition() {
-		if(this.input.value !== '') {
-			this.props.addConcern(this.input.value);
-			this.setState({
-				value: ''
-			});
-			this.input.placeholder = "Add a concern...";
-		}
-	}
-	
-	render() {
-		return (
-			// ref should be passed a callback
-			// with underlying dom element as its
-			// argument to get its reference 
-			<div id="form">
-				<input 
-					ref={node => {
-						this.input = node;
-					}}
-					value={this.state.value}
-					placeholder="Add concerns here..."
-					autocomplete="off"
-					onChange={this.handleChange}
-				/>
-
-				<button 
-					onClick={this.handleNewConcernAddition}
-				>	
-					+
-				</button>	
-			</div>
-		);
-	}
-}
-
-const Concern = ({concern, remove}) => {
-	// single concern 
-	return (
-		<p className="concerns">
-			{concern.value}
-			<span 
-				className="removeBtn"
-				onClick={()=> {
-					remove(concern.id)
-				}}>
-				x
-			</span>
-		</p>
-	);
-};
-
-const List = ({concerns, remove}) => {
-	let allConcerns = [];
-	
-	if(concerns.length > 0) {
-		allConcerns = concerns.map(concern => {
-			// passing concern and remove method reference
-			return (<Concern concern={concern} remove={remove} />);
-			//return (<p>{concern.value}</p>);
-		});
-	} else {
-		allConcerns.push(<h3 id="acu">All caught up !</h3>);	
-	}
-	
-	return (
-		<div id="list">
-			<p id="info"> Your Concerns: </p>
-			{allConcerns}
-		</div>
-	);
-};
-
-const Footer = () => {
-	return (
-		<div id="footer">
-			<a href="https://sites.google.com/cs.umass.edu/compsci326/home" target="_blank">
-				<p>
-					CS 326 Spring 19
-				</p>
-			</a>
-		</div>
-	);
-};
-
-class Container extends React.Component {
-	constructor(props) {
-		super(props);
-		// data for introduction to app
-		// for new users
-		const introData = [
-			{
-				id: -3, 
-				value: "The sink does not work at the moment. It is not draining the water."
-			},
-			{
-				id: -2,
-				value: "Our shower head is leaking."
-			},
-			{
-				id: -1,
-				value: "Our bathroom door is not locking properly."
-			}
-		];
-		
-		const localData = localStorage.concerns && JSON.parse(localStorage.concerns);
-
-		this.state = { 
-			data: localData || introData
-		};
-		
-		// binding methods
-		this.addConcern = this.addConcern.bind(this);
-		this.removeConcern = this.removeConcern.bind(this);
-	}
-	// Handler to update localStorage
-	updateLocalStorage() {
-		if (typeof(Storage) !== "undefined")
-			localStorage.concerns = JSON.stringify(this.state.data);
-	}
-	// Handler to add concerns
-	addConcern(val) {
-		let id;
-		// if localStorage is available then increase localStorage count
-		// else use global window object's id variable
-		if (typeof(Storage) !== "undefined") {
-			id = Number(localStorage.count);
-			localStorage.count = Number(localStorage.count) + 1;
-		} else {
-			id = window.id++;
-		}
-		
-		const concern = { 
-			value: val, 
-			id: id 
-		};
-		
-		this.state.data.push(concern);
-		// update state
-		this.setState({
-			data: this.state.data
-		}, () => {
-			// update localStorage
-			this.updateLocalStorage();
-		});
-	}
-	// Handler to remove concern
-	removeConcern(id) {
-		// filter out the concern that has to be removed
-		const list = this.state.data.filter(concern => {
-			if (concern.id !== id)
-				return concern;
-		});
-		// update state
-		this.setState({
-			data: list
-		}, () => {
-			// update localStorage
-			this.updateLocalStorage();
-		});
-	}
-	
-	componentDidMount() {
-		localStorage.clear();
-		if (typeof(Storage) !== "undefined") {
-			if(!localStorage.concerns) {
-				localStorage.concerns = JSON.stringify(this.state.data);
-			}
-			if(!localStorage.count) {
-				localStorage.count = 0;
-			}
-
-		} else {
-			 console.log("%cApp will not remember concerns created as LocalStorage Is Not Available",
-							 "color: hotpink; background: #333; font-size: x-large;font-family: Courier;");
-			window.id = 0;
-		}
-	}
-	
-	render() {
-		return (
-			<div id="container">
-				<Title />
-				<Form addConcern={this.addConcern} />
-				<List concerns={this.state.data} remove={this.removeConcern} />
-				<Footer />
-			</div>
-		);
-	}
-}
-
-ReactDOM.render(<Container />, contentNode);
-// This renders the JSX component inside the content node:
-//ReactDOM.render(<MyComponent />, contentNode);
+ReactDOM.render(<RequestList />, contentNode);

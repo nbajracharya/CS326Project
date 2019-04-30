@@ -44,7 +44,8 @@ const RoutedApp = () => (
     {/* <Redirect from="/" to="/requests" /> */}
     <Route path="/" component={App} >
       <IndexRoute component={Requests} />
-      <Route path="/requests" component={Requests} />
+      <Route path="/requests" component={withRouter(Requests)} />
+      <Route path="/requests/:id" component={Requests} />
       <Route path="/login" component={Login} />
       <Route path="*" component={NoMatch} />
     </Route>
